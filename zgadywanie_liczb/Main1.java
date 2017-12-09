@@ -34,8 +34,8 @@ public class Main1 {
 			scan.next();
 		}
 		
-		int ret = scan.nextInt();
-		return ret;
+		return scan.nextInt();
+		
 		
 	}
 	
