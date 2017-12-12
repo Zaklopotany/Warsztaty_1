@@ -1,10 +1,16 @@
 package Exce5;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.jsoup.Connection;
@@ -23,7 +29,7 @@ public class Main1 {
 
 	
 	
-	static void getRank () {
+	static <V> void getRank () {
 		Map <String, Integer> rankingMap = new HashMap <>();
 //		String tempStr = new String();
 		String splitReg = new String("[/.,?!\"'-:;+=\\s]");
@@ -45,6 +51,25 @@ public class Main1 {
 		    		}
 		    	}
 //		        System.out.println(Arrays.toString(tempStr));
+		    
+		    	
+
+		        List<Entry<String, Integer>> list = new LinkedList<>(rankingMap.entrySet());
+		        
+		        Collections.sort(list, new Comparator<Entry<String, Integer>>() {
+		        	public int compare(Entry<String, Integer> o1, Entry<String, Integer> o2) {
+		        		return (o1.getValue()) - ( o2.getValue());
+		        	}
+		        });
+		        
+//		        for(Map.Entry<String, Integer> entry:list){
+//		            System.out.println(entry.getKey()+" ==== "+entry.getValue());
+//		        }
+		    
+		
+		    	
+		    	
+		    	
 		        
 		    }
 	    	System.out.println(Arrays.toString(rankingMap.entrySet().toArray()));
