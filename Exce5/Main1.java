@@ -38,18 +38,18 @@ public class Main1 {
 				"http://www.gazeta.pl/" };
 		File file = new File("popular_words.txt");
 
-		for (String strSites : popularSites) {
-			Connection connect = Jsoup.connect(strSites);
-
-			try {
+		try {
+			
+			for (String strSites : popularSites) {
+				
+				Connection connect = Jsoup.connect(strSites);
 				FileWriter fw1 = new FileWriter(file, true);
 				Document document = connect.get();
 				Elements links = document.select("span.title");
 
 				for (Element elem : links) {
 					String[] tempStr = elem.text().split("[/.,?!\"'-:;+=\\s]");
-					// eliminating ""
-
+					// eliminating "" and short words
 					for (String strWords : tempStr) {
 						if (!strWords.equals("") && strWords.length() > 3) {
 							fw1.append(strWords).append("\n");
@@ -58,69 +58,54 @@ public class Main1 {
 
 				}
 
-				// sortowanie
-
-//				 for (int i = 0; i < tempStr.length; i++) {
-//				 if (!rankingMap.containsKey(tempStr[i]) &&
-//				 tempStr[i].length() > 0) {
-//				 rankingMap.put(tempStr[i], 1);
-//				 } else if ( rankingMap.containsKey(tempStr[i]) ){
-//				 rankingMap.put(tempStr[i], rankingMap.get(tempStr[i]) + 1);
-//				 }
-//				 }
-
-				// List<Entry<String, Integer>> list = new
-				// LinkedList<>(rankingMap.entrySet());
-				//
-				// Collections.sort(list, new Comparator<Entry<String,
-				// Integer>>() {
-				// public int compare(Entry<String, Integer> o1, Entry<String,
-				// Integer> o2) {
-				// return (o1.getValue()) - ( o2.getValue());
-				// }
-				// });
-
-				// Iterator<Entry<String, Integer>> iter =
-				// rankingMap.entrySet().iterator();
-				//
-				//
-				//
-				// // the key/value pair is stored here in pairs
-				// Map.Entry<String, Integer> pairs = iter.next();
-				//
-				// FileWriter fw = new FileWriter("exce5.txt");
-				// fw.append(pairs);
-
 				fw1.close();
-				// System.out.println(Arrays.toString(rankingMap.entrySet().toArray()));
-
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
-		}
-		Scanner scan = new Scanner(file);
+			
+			//count words
+			Scanner scan = new Scanner(file);
 			while (scan.hasNext()) {
 				String str = scan.next();
-				 if (!rankingMap.containsKey(str)) {
-				 rankingMap.put(str, 1);
-				 } else if ( rankingMap.containsKey(str) ){
-				 rankingMap.put(str, rankingMap.get(str) + 1);
-				 }
-				 
+				if (!rankingMap.containsKey(str)) {
+					rankingMap.put(str, 1);
+				} else if (rankingMap.containsKey(str)) {
+					rankingMap.put(str, rankingMap.get(str) + 1);
+				}
+
+			}
+
+			// Sort and save to list
+			List<Entry<String, Integer>> list = new LinkedList<>(rankingMap.entrySet());
+
+			Collections.sort(list, new Comparator<Entry<String, Integer>>() {
+				public int compare(Entry<String, Integer> o1, Entry<String, Integer> o2) {
+					// sorting condition - descending
+					return (o2.getValue()) - (o1.getValue());
+
+				}
+			});
+			//select and write to new file 10 most popular words
+			File fileRank = new File("most_popular_words.txt");
+			FileWriter fwRank = new FileWriter(fileRank, true);
+
+			for (int i = 0; i < 10; i++) {
+				int endOfString = list.get(i).toString().indexOf("=");
+				fwRank.append(list.get(i).toString().substring(0, endOfString)).append("\n");
+			}
+			fwRank.close();
+
+			scan.close();
 			
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+			
+		} catch (Exception e) {
+			
+			System.out.println(e.getMessage());
 		}
 
 	}
 
-	// public static TreeMap<String, Integer> sortMapByValue(HashMap<String,
-	// Integer> map){
-	// Comparator<String> comparator = new ValueComparator(map);
-	// //TreeMap is a map sorted by its keys.
-	// //The comparator is used to sort the TreeMap by keys.
-	// TreeMap<String, Integer> result = new TreeMap<String,
-	// Integer>(comparator);
-	// result.putAll(map);
-	// return result;
-	// }
+
 
 }
